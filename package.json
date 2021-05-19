@@ -1,0 +1,23 @@
+{
+  "name": "anneshzero",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/annesh0/AnneshZero.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/annesh0/AnneshZero/issues"
+  },
+  "homepage": "https://github.com/annesh0/AnneshZero#readme",
+  "dependencies": {
+    "@chrisoakman/chessboardjs": "^1.0.0",
+    "chess.js": "^0.11.0"
+  }
+}
