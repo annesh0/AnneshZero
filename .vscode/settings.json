@@ -1,0 +1,16 @@
+{
+    "editor.cursorWidth": 1,
+    "workbench.colorCustomizations": {
+        "editorCursor.background":"#ffffff",
+        "editorCursor.foreground":"#ffffff",
+    },
+    "editor.cursorBlinking": "smooth",
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [{
+            "scope": "punctuation",
+            "settings": {
+                "foreground": "#ffffff"
+            }
+        }]
+    }
+}
