@@ -10,7 +10,6 @@ var config = {
 }
 
 function onDragStart(source, piece, position, orientation) {
-    console.log(whiteRookValues)
     //make sure game not over
     if(chess.game_over()) return false
     //make sure white to move and only picking up white pieces
@@ -120,22 +119,22 @@ function updatedPosEval(position) {
                     value += (-1) * generalPieceValue.get(entry.type)
                     switch(entry.type) {
                         case "p":
-                            value += blackPawnValues[i][j];
+                            value += (-1) * blackPawnValues[i][j];
                             break;
                         case "n":
-                            value += blackKnightValues[i][j];
+                            value += (-1) *  blackKnightValues[i][j];
                             break;
                         case "b":
-                            value += blackBishopValues[i][j];
+                            value += (-1) *  blackBishopValues[i][j];
                             break;
                         case "r":
-                            value += blackRookValues[i][j];
+                            value += (-1) *  blackRookValues[i][j];
                             break;
                         case "q":
-                            value += blackQueenValues[i][j];
+                            value += (-1) *  blackQueenValues[i][j];
                             break;
                         case "k":
-                            value += blackKingValues[i][j];
+                            value +=  (-1) *  blackKingValues[i][j];
                             break;
                     }
                 } else {
@@ -151,7 +150,6 @@ function updatedPosEval(position) {
                             value += whiteBishopValues[i][j];
                             break;
                         case "r":
-                            console.log(whiteRookValues[0][0])
                             value += whiteRookValues[i][j];
                             break;
                         case "q":
@@ -196,7 +194,7 @@ function posEval(position) {
  */
 function minimax(chess, depth, flag) {
     if(depth == 0 || chess.game_over()) {
-        return [null, updatedPosEval(chess.fen())]
+        return [null, -updatedPosEval(chess.fen())]
     }
     var bestMove = null
     if(flag) {
