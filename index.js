@@ -35,6 +35,138 @@ const generalPieceValue = new Map([
     ["k", 900]
 ]);
 
+const whitePawnValues = [
+    [0,  0,  0,  0,  0,  0,  0,  0],
+    [50, 50, 50, 50, 50, 50, 50, 50],
+    [10, 10, 20, 30, 30, 20, 10, 10],
+    [5,  5, 10, 25, 25, 10,  5,  5],
+    [0,  0,  0, 20, 20,  0,  0,  0],
+    [5, -5,-10,  0,  0,-10, -5,  5],
+    [5, 10, 10,-20,-20, 10, 10,  5],
+    [0,  0,  0,  0,  0,  0,  0,  0]
+]
+
+const whiteKnightValues = [
+    [-50,-40,-30,-30,-30,-30,-40,-50],
+    [-40,-20,  0,  0,  0,  0,-20,-40],
+    [-30,  0, 10, 15, 15, 10,  0,-30],
+    [-30,  5, 15, 20, 20, 15,  5,-30],
+    [-30,  0, 15, 20, 20, 15,  0,-30],
+    [-30,  5, 10, 15, 15, 10,  5,-30],
+    [-40,-20,  0,  5,  5,  0,-20,-40],
+    [-50,-40,-30,-30,-30,-30,-40,-50],
+]
+
+const whiteBishopValues = [
+    [-20,-10,-10,-10,-10,-10,-10,-20]
+    [-10,  0,  0,  0,  0,  0,  0,-10],
+    [-10,  0,  5, 10, 10,  5,  0,-10],
+    [-10,  5,  5, 10, 10,  5,  5,-10],
+    [-10,  0, 10, 10, 10, 10,  0,-10],
+    [-10, 10, 10, 10, 10, 10, 10,-10],
+    [-10,  5,  0,  0,  0,  0,  5,-10],
+    [-20,-10,-10,-10,-10,-10,-10,-20,]
+]
+
+const whiteRookValues = [
+    [0,  0,  0,  0,  0,  0,  0,  0]
+    [5, 10, 10, 10, 10, 10, 10,  5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [0,  0,  0,  5,  5,  0,  0,  0]
+]
+
+const whiteQueenValues = [
+    [-20,-10,-10, -5, -5,-10,-10,-20],
+    [-10,  0,  0,  0,  0,  0,  0,-10],
+    [-10,  0,  5,  5,  5,  5,  0,-10],
+    [-5,  0,  5,  5,  5,  5,  0, -5],
+    [0,  0,  5,  5,  5,  5,  0, -5],
+    [-10,  5,  5,  5,  5,  5,  0,-10],
+    [-10,  0,  5,  0,  0,  0,  0,-10],
+    [-20,-10,-10, -5, -5,-10,-10,-20]
+]
+
+const whiteKingValues = [
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-20,-30,-30,-40,-40,-30,-30,-20],
+    [-10,-20,-20,-20,-20,-20,-20,-10],
+    [20, 20,  0,  0,  0,  0, 20, 20],
+    [20, 30, 10,  0,  0, 10, 30, 20]
+]
+
+//mirror values for black pieces
+blackPawnValues = whitePawnValues.slice().reverse()
+blackKnightValues = whiteKnightValues.slice().reverse()
+blackBishopValues = whiteBishopValues.slice().reverse()
+blackRookValues = whiteRookValues.slice().reverse()
+blackQueenValues = whiteQueenValues.slice().reverse()
+blackKingValues = whiteKingValues.slice().reverse()
+
+function updatedPosEval(position) {
+    var value = 0
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            var curBoard = chess.board()
+            var entry = curBoard[i][j]
+            if(entry != null) {
+                if(entry.color == 'b'){
+                    value += (-1) * generalPieceValue.get(entry.type)
+                    switch(entry.type) {
+                        case "p":
+                            value += blackPawnValues[i][j];
+                            break;
+                        case "n":
+                            value += blackKnightValues[i][j];
+                            break;
+                        case "b":
+                            value += blackBishopValues[i][j];
+                            break;
+                        case "r":
+                            value += blackRookValues[i][j];
+                            break;
+                        case "q":
+                            value += blackQueenValues[i][j];
+                            break;
+                        case "k":
+                            value += blackKingValues[i][j];
+                            break;
+                    }
+                } else {
+                    value += (1) * generalPieceValue.get(entry.type)
+                    switch(entry.type) {
+                        case "p":
+                            value += whitePawnValues[i][j];
+                            break;
+                        case "n":
+                            value += whiteKnightValues[i][j];
+                            break;
+                        case "b":
+                            value += whiteBishopValues[i][j];
+                            break;
+                        case "r":
+                            value += whiteRookValues[i][j];
+                            break;
+                        case "q":
+                            value += whiteQueenValues[i][j];
+                            break;
+                        case "k":
+                            value += whiteKingValues[i][j];
+                            break;
+                    }
+                }
+                
+            }
+        }
+    }
+}
+
 function posEval(position) {
     var value = 0
     for (let i = 0; i < 8; i++) {
@@ -54,8 +186,52 @@ function posEval(position) {
     return value
 }
 
-function minMaxAI() {
-    
+/**
+ * Minimax algo
+ * @param {*} chess game state object
+ * @param {*} depth current tree depth
+ * @param {*} flag true if maximizing player, else false
+ * @returns [bestMove, evalValue]
+ */
+function minimax(chess, depth, flag) {
+    if(depth == 0 || chess.game_over()) {
+        return [null, updatedPosEval(chess.fen())]
+    }
+    var bestMove = null
+    if(flag) {
+        var maxEval = -9999
+        for(const move of chess.moves()) {
+            chess.move(move)
+            var curVal = Math.max(maxEval, minimax(chess, depth-1, !flag)[1])
+            chess.undo()
+            if(curVal > maxEval) {
+                maxEval = curVal
+                bestMove = move
+            }
+        }
+        return [bestMove, maxEval]
+    } else {
+        var minEval = 9999
+        for(const move of chess.move()) {
+            chess.move(move)
+            var curVal = Math.min(minEval, minimax(chess,depth-1,!flag)[1])
+            chess.undo()
+            if(curVal < minEval) {
+                minEval = curVal
+                bestMove = move
+            }
+        }
+        return [bestMove, minEval]
+    }
+}
+
+//AI using minimax algo
+function minimaxAI() {
+    if(chess.game_over()) return
+    if(chess.turn() == 'b') {
+        chess.move(minimax(chess, 5, false)[0])
+        board1.position(chess.fen())
+    }
 }
 
 function simpleEvalAI() {
