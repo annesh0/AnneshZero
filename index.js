@@ -67,7 +67,7 @@ var whiteBishopValues = [
     [-10,  5,  0,  0,  0,  0,  5,-10],
     [-20,-10,-10,-10,-10,-10,-10,-20,]
 ];
-
+var val = updatedPosEval("1rbqkbnr/pppppppp/2n5/4P3/8/8/PPPP1PPP/RNBQKBNR w KQk - 1 3")
 var whiteRookValues = [
     [0,  0,  0,  0,  0,  0,  0,  0],
     [5, 10, 10, 10, 10, 10, 10,  5],
@@ -108,11 +108,10 @@ var blackRookValues = whiteRookValues.slice().reverse()
 var blackQueenValues = whiteQueenValues.slice().reverse()
 var blackKingValues = whiteKingValues.slice().reverse()
 
-function updatedPosEval(position) {
+function updatedPosEval(curBoard) {
     var value = 0
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            var curBoard = chess.board()
             var entry = curBoard[i][j]
             if(entry != null) {
                 if(entry.color == 'b'){
@@ -164,6 +163,7 @@ function updatedPosEval(position) {
             }
         }
     }
+    return value
 }
 
 function posEval(position) {
@@ -194,7 +194,8 @@ function posEval(position) {
  */
 function minimax(chess, depth, flag) {
     if(depth == 0 || chess.game_over()) {
-        return [null, -updatedPosEval(chess.fen())]
+        console.log(chess.fen())
+        return [null, -updatedPosEval(chess.board())]
     }
     var bestMove = null
     if(flag) {
