@@ -24,15 +24,15 @@ function onDrop(source, target) {
     })
     if (move == null) return 'snapback'
 
-    window.setTimeout(minimaxAI, 500)
+    window.setTimeout(alphabetaAI, 50)
 }
-const generalPieceValue = new Map([
-    ["p", 10],
-    ["n", 30],
-    ["b", 30],
-    ["r", 50],
-    ["q", 90],
-    ["k", 900]
+var generalPieceValue = new Map([
+    ["p", 100],
+    ["n", 320],
+    ["b", 330],
+    ["r", 500],
+    ["q", 900],
+    ["k", 20000]
 ]);
 
 var whitePawnValues = [
@@ -113,7 +113,9 @@ function updatedPosEval(curBoard) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             var entry = curBoard[i][j]
+            //console.log(entry)
             if(entry != null) {
+                //console.log(entry.type)
                 if(entry.color == 'b'){
                     value += (-1) * generalPieceValue.get(entry.type)
                     switch(entry.type) {
@@ -136,7 +138,7 @@ function updatedPosEval(curBoard) {
                             value +=  (-1) *  blackKingValues[i][j];
                             break;
                     }
-                } else {
+                } else if (entry.color == "w"){
                     value += (1) * generalPieceValue.get(entry.type)
                     switch(entry.type) {
                         case "p":
@@ -186,15 +188,57 @@ function posEval(position) {
 }
 
 /**
- * Minimax algo
- * @param {*} chess game state object
- * @param {*} depth current tree depth
- * @param {*} flag true if maximizing player, else false
+ * Minimax algo w/ alpha beta pruning
+ */
+function alphabeta(chess, depth, alpha, beta, flag) {
+    if(depth == 0 ) {
+        return [null, -updatedPosEval(chess.board())]
+    }
+    var bestMove = null
+    if(flag) {
+        var maxEval = -999999
+        for(const move of chess.moves()) {
+            chess.move(move)
+            var curVal = Math.max(maxEval, alphabeta(chess, depth-1, alpha, beta, !flag)[1])
+            chess.undo()
+            if(curVal > maxEval) {
+                maxEval = curVal
+                bestMove = move
+            }
+            if(maxEval >= beta) {
+                break;
+            }
+            alpha = Math.max(alpha, maxEval)
+        }
+        return [bestMove, maxEval]
+    } else {
+        var minEval = 999999
+        for(const move of chess.moves()) {
+            chess.move(move)
+            var curVal = Math.min(minEval, minimax(chess,depth-1,!flag)[1])
+            chess.undo()
+            if(curVal < minEval) {
+                minEval = curVal
+                bestMove = move
+            }
+            if(minEval <= alpha) {
+                break;
+            }
+            beta = Math.min(beta, minEval)
+        }
+        return [bestMove, minEval]
+    }
+}
+
+/**
+ * Standard Minimax algo
+ * @param {*} chess is the game state object
+ * @param {*} depth is the current tree depth
+ * @param {*} flag is true if maximizing player, else false
  * @returns [bestMove, evalValue]
  */
 function minimax(chess, depth, flag) {
-    if(depth == 0 || chess.game_over()) {
-        console.log(chess.fen())
+    if(depth == 0 ) {
         return [null, -updatedPosEval(chess.board())]
     }
     var bestMove = null
@@ -230,6 +274,15 @@ function minimaxAI() {
     if(chess.game_over()) return
     if(chess.turn() == 'b') {
         chess.move(minimax(chess, 3, true)[0])
+        board1.position(chess.fen())
+    }
+}
+
+//AI using alpha beta pruned minimax algo
+function alphabetaAI() {
+    if(chess.game_over()) return
+    if(chess.turn() == 'b') {
+        chess.move(alphabeta(chess, 3, -999999,999999, true)[0])
         board1.position(chess.fen())
     }
 }
@@ -271,5 +324,5 @@ function randomAI() {
 }
 var board1 = Chessboard('board1', config)
 
-window.setTimeout(minimaxAI, 500)
+window.setTimeout(alphabetaAI, 50)
 
