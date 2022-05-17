@@ -67,7 +67,6 @@ var whiteBishopValues = [
     [-10,  5,  0,  0,  0,  0,  5,-10],
     [-20,-10,-10,-10,-10,-10,-10,-20,]
 ];
-var val = updatedPosEval("1rbqkbnr/pppppppp/2n5/4P3/8/8/PPPP1PPP/RNBQKBNR w KQk - 1 3")
 var whiteRookValues = [
     [0,  0,  0,  0,  0,  0,  0,  0],
     [5, 10, 10, 10, 10, 10, 10,  5],
@@ -302,6 +301,7 @@ function alphabetaAI() {
         board1.position(chess.fen())
     }
 }
+
 
 /**
  * Standard Minimax algo
