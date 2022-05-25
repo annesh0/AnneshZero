@@ -1,4 +1,5 @@
 import os
+import random
 from typing import OrderedDict
 import torch
 from torch.utils.data import Dataset, DataLoader, IterableDataset, random_split
@@ -28,7 +29,7 @@ db.connect()
 eval = Evaluations.get(Evaluations.id == 1)
 print(eval.fen)
 
-class EvalutionDataset(IterableDataset):
+class EvaluationDataset(IterableDataset):
     def __init__(self, count):
         self.count = count
     def __iter__(self):
@@ -39,7 +40,7 @@ class EvalutionDataset(IterableDataset):
         return self.count
     def __getitem__(self, index):
         eval = Evaluations.get(Evaluations.id == index+1)
-        bin = np.frombuffer(eval.binary, dtype=np.unit8)
+        bin = np.frombuffer(eval.binary, dtype=np.uint8)
         bin = np.unpackbits(bin, axis=0).astype(np.single)
         eval.eval = max(eval.eval, -15)
         eval.eval = min(eval.eval, 15)
@@ -66,13 +67,19 @@ class Model(pl.LightningModule):
         x = batch["binary"]
         y = batch["eval"]
         y_hat = self(x)
-        loss = F.li_loss(y_hat, y)
+        loss = F.l1_loss(y_hat, y)
         self.log("training_loss", loss)
         return loss
     
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(),lr=self.learning_rate)
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
     def train_dataloader(self):
-        dataset = EvalutionDataset(count=37164639)
-        return DataLoader(dataset, batch_size=self.batch_size, num_workers=2,pin_memory=True)
+        dataset = EvaluationDataset(count=37164639)
+        return DataLoader(dataset, batch_size=self.batch_size, num_workers=0, pin_memory=True)
+
+LABEL_COUNT = 37164639
+
+model = Model(layer_count=4)
+trainer = pl.Trainer(precision=16,max_epochs=1,auto_lr_find=True)
+trainer.fit(model)
