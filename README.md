@@ -1,6 +1,7 @@
 # AnneshZero
 
-Chess AI:
+## Chess AI
+Features:
 - Minimax algorithm
 - Alpha-beta pruning
 - Quiescence Search
@@ -9,3 +10,4 @@ Chess AI:
 To-do:
 - Finish training model (Currently: 5% Done, Loss = 2.2)
 - Connect python backend for ML model to JS frontend
+- Host playable AI
